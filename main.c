@@ -2,9 +2,13 @@
 #include <stdlib.h>
 FILE* f;
 FILE* f1;
-int Sort1(int* m, int v) {
+typedef struct Mass_Ver {
+    int nom;
+    int stepen;
+} Mass_Ver;
+int Print_Top(Mass_Ver* m, int v) {
     for (int j = 0; j < v; j++) {
-    printf("%d ",m[j]);
+        printf("top(vershina) - %d; degree(stepen) - %d\n",m[j].nom,m[j].stepen);
     }
     printf("\n");
     return 0;
@@ -38,7 +42,7 @@ int main(void) {
                 x1 = j+1;
             else if (m[i][j] == 1 && x2 == -1 )
                 x2 = j+1;
-             else if (m[i][j] == 2 )
+             else if ( m[i][j] == 2 )
                 x2 = x1 = j+1;
         }
         if (x1 == -1)
@@ -48,11 +52,6 @@ int main(void) {
         else
             fprintf(f,"%d -- %d;\n",x1,x2);
     }
-    fprintf(f,"{ rank = same; ");
-    for (int j = 0; j < v; j++) {
-        fprintf(f,"%d; ",j+1);
-    }
-    fprintf(f,"}\n");
     fprintf(f,"}");
     fclose(f);
     // change Graf
@@ -69,6 +68,7 @@ int main(void) {
     scanf("%d",&t2);
     --t1;
     --t2;
+// NEW GRAF
     fprintf(f1,"graph MyGraf {\n");
     for (int i = 0; i < sv; i++)
     {
@@ -101,17 +101,8 @@ int main(void) {
             fprintf(f,"%d -- %d;\n",x1,x2);
     }
 
-
-    fprintf(f1,"{ rank = same; ");
-    for (int j = 0; j < v; j++) {
-        if ( (j == t1) || (j == t2) )
-            continue;
-        fprintf(f1,"%d; ",j+1);
-    }
-    fprintf(f1,"}\n");
     fprintf(f1,"}");
     fclose(f1);
-
     printf("\n\n");
     for (int i = 0; i < sv; i++) {
         for (int j = 0; j < v; j++) {
@@ -120,29 +111,34 @@ int main(void) {
         printf("\n");
     }
     printf("\n");
-
-    int mas_sort[v];
+//int mas_sort[v];
+    Mass_Ver mas_sort[v];
     for (int j = 0; j < v; j++) {
-        mas_sort[j] = 0;
+        mas_sort[j].nom = j;
+        mas_sort[j].stepen = 0;
+
     }
     for (int i = 0; i < v; i++) {
         for (int j = 0; j < sv; j++) {
-        mas_sort[i] += m[j][i];
+        mas_sort[i].stepen += m[j][i];
        }
     }
     printf("\n\n");
-    Sort1(mas_sort,v);
+    Print_Top(mas_sort,v);
     for (int i = 1; i < v; i++) {
         int j = i;
-        int p = mas_sort[i];
-        while ( (j > 0) && (mas_sort[j-1] < p) )  {
-            mas_sort[j] = mas_sort[j-1];
+        int p = mas_sort[i].stepen;
+        int p1 = mas_sort[i].nom;
+        while ( (j > 0) && (mas_sort[j-1].stepen < p) )  {
+            mas_sort[j].stepen = mas_sort[j-1].stepen;
+            mas_sort[j].nom = mas_sort[j-1].nom;
             --j;
         }
-        mas_sort[j] = p;
+        mas_sort[j].stepen = p;
+        mas_sort[j].nom = p1;
     }
     printf("\n");
-    Sort1(mas_sort,v);
+    Print_Top(mas_sort,v);
 
     return 0;
 }
